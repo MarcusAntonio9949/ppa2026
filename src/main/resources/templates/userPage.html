@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Área do usuário</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+</head>
+<body>
+  <div class="page">
+    <div class="user-header">
+      <img src="/images/do-utilizador.png" alt="Foto do usuário" class="usu">
+      <div>
+        <h2 th:text="${user.name}">Nome do usuário</h2>
+        <p>CPF: <span th:text="${user.cpf}"></span></p>
+        <p>Telefone: <span th:text="${user.phone}"></span></p>
+      </div>
+      <div class="points-badge">
+        <span th:text="${user.points}">0</span>
+        <small>pontos</small>
+      </div>
+    </div>
+
+    <div class="user-actions">
+      <a href="/doar" class="cada">Nova doação</a>
+      <a href="/sair" class="cada outline">Sair</a>
+    </div>
+
+    <div class="donations">
+      <h3>Minhas doações recentes</h3>
+      <p th:if="${#lists.isEmpty(donations)}">Você ainda não registrou doações.</p>
+      <ul th:if="${!#lists.isEmpty(donations)}">
+        <li th:each="donation : ${donations}">
+          <strong th:text="${donation.description}">Descrição</strong>
+          <span th:text="${donation.pickupOption.label}">Entrega</span>
+          <small th:text="${#temporals.format(donation.createdAt, 'dd/MM/yyyy HH:mm')}"></small>
+        </li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html>
