@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+  <title>Doe Agora</title>
+  <script src="/app.js" defer></script>
+</head>
+<body data-page="doa">
+  <header class="simple-header">
+    <a href="/">Voltar</a>
+    <a href="/userPage.html">Minha conta</a>
+  </header>
+
+  <section class="form-section">
+    <h1>Doe agora</h1>
+    <p>Conte quais alimentos você deseja doar e escolha a melhor forma de entrega.</p>
+
+    <form class="donation-form" id="donation-form">
+      <label>
+        Descrição dos alimentos
+        <textarea class="form-input" rows="4" placeholder="Ex: 5kg de arroz, 2 caixas de leite" name="description" required></textarea>
+      </label>
+
+      <label>
+        Como prefere entregar?
+        <select class="form-input" name="pickupOption" required>
+          <option value="" disabled selected>Selecione</option>
+          <option value="DROP_OFF">Levar até a sede</option>
+          <option value="MEET_POINT">Marcar ponto de encontro</option>
+          <option value="DELIVERY">Solicitar motoboy</option>
+        </select>
+      </label>
+
+      <button class="cada" type="submit">Registrar doação</button>
+      <p class="form-message" id="donation-message"></p>
+    </form>
+  </section>
+</body>
+</html>

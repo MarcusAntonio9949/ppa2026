@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Área do usuário</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+  <script src="/app.js" defer></script>
+</head>
+<body data-page="usuario">
+  <div class="page">
+    <div class="user-header">
+      <img src="/images/do-utilizador.png" alt="Foto do usuário" class="usu">
+      <div>
+        <h2 id="user-name">Nome do usuário</h2>
+        <p>CPF: <span id="user-cpf"></span></p>
+        <p>Telefone: <span id="user-phone"></span></p>
+      </div>
+      <div class="points-badge">
+        <span id="user-points">0</span>
+        <small>pontos</small>
+      </div>
+    </div>
+
+    <div class="user-actions">
+      <a href="/doa.html" class="cada">Nova doação</a>
+      <button class="cada outline" id="logout-secondary">Sair</button>
+    </div>
+
+    <div class="donations">
+      <h3>Minhas doações recentes</h3>
+      <p id="donation-empty">Você ainda não registrou doações.</p>
+      <ul id="donation-list" class="hidden"></ul>
+    </div>
+  </div>
+</body>
+</html>
