@@ -86,10 +86,6 @@ const handleDonation = () => {
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
     const payload = Object.fromEntries(new FormData(form).entries());
-    const storedUserId = getStoredUserId();
-    if (storedUserId) {
-      payload.userId = Number(storedUserId);
-    }
     try {
       const data = await apiRequest('/api/doar', {
         method: 'POST',
@@ -129,6 +125,7 @@ const handleUserPage = async () => {
     const storedUserId = getStoredUserId();
     const userPath = storedUserId ? `/api/usuario?userId=${storedUserId}` : '/api/usuario';
     const data = await apiRequest(userPath);
+    const data = await apiRequest('/api/usuario');
     document.getElementById('user-name').textContent = data.name;
     document.getElementById('user-cpf').textContent = data.cpf;
     document.getElementById('user-phone').textContent = data.phone;
@@ -173,9 +170,7 @@ const handleHome = async () => {
   if (!pointsValue) return;
 
   try {
-    const storedUserId = getStoredUserId();
-    const userPath = storedUserId ? `/api/usuario?userId=${storedUserId}` : '/api/usuario';
-    const data = await apiRequest(userPath);
+    const data = await apiRequest('/api/usuario');
     pointsValue.textContent = data.points;
     logoutButton?.classList.remove('hidden');
     logoutButton?.addEventListener('click', async () => {
