@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel Admin</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+  <script src="/app.js" defer></script>
+</head>
+<body data-page="admin">
+  <header class="simple-header">
+    <a href="/index.html">Voltar</a>
+    <button class="cada" id="admin-logout">Sair</button>
+  </header>
+
+  <section class="form-section">
+    <h1>Painel administrativo</h1>
+    <p>Visão geral do banco de dados.</p>
+
+    <div class="admin-section">
+      <h2>Usuários cadastrados</h2>
+      <ul id="admin-users" class="admin-list"></ul>
+    </div>
+
+    <div class="admin-section">
+      <h2>Doações registradas</h2>
+      <ul id="admin-donations" class="admin-list"></ul>
+    </div>
+
+    <div class="admin-section">
+      <h2>Voluntários cadastrados</h2>
+      <ul id="admin-volunteers" class="admin-list"></ul>
+    </div>
+  </section>
+</body>
+</html>
