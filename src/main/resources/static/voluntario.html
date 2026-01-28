@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+  <title>Seja voluntário</title>
+  <script src="/app.js" defer></script>
+</head>
+<body data-page="voluntario">
+  <header class="simple-header">
+    <a href="/index.html">Voltar</a>
+  </header>
+
+  <section class="form-section">
+    <h1>Seja voluntário</h1>
+    <p>Ajude a distribuir alimentos e leve solidariedade a mais pessoas.</p>
+
+    <form class="donation-form" id="volunteer-form">
+      <label>
+        Nome completo
+        <input class="form-input" type="text" placeholder="Digite seu nome" name="name" required>
+      </label>
+
+      <label>
+        E-mail
+        <input class="form-input" type="email" placeholder="email@exemplo.com" name="email" required>
+      </label>
+
+      <label>
+        Telefone
+        <input class="form-input" type="text" placeholder="(00) 00000-0000" name="phone" required>
+      </label>
+
+      <label>
+        Disponibilidade
+        <textarea class="form-input" rows="3" placeholder="Dias e horários disponíveis" name="availability" required></textarea>
+      </label>
+
+      <button class="cada" type="submit">Enviar candidatura</button>
+      <p class="form-message" id="volunteer-message"></p>
+    </form>
+  </section>
+</body>
+</html>
