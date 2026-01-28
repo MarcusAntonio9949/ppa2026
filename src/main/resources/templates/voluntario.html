@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+  <title>Seja voluntário</title>
+</head>
+<body>
+  <header class="simple-header">
+    <a href="/">Voltar</a>
+  </header>
+
+  <section class="form-section">
+    <h1>Seja voluntário</h1>
+    <p>Ajude a distribuir alimentos e leve solidariedade a mais pessoas.</p>
+
+    <form class="donation-form" th:action="@{/voluntario}" method="post" th:object="${volunteerForm}">
+      <label>
+        Nome completo
+        <input class="form-input" type="text" placeholder="Digite seu nome" th:field="*{name}" required>
+      </label>
+
+      <label>
+        E-mail
+        <input class="form-input" type="email" placeholder="email@exemplo.com" th:field="*{email}" required>
+      </label>
+
+      <label>
+        Telefone
+        <input class="form-input" type="text" placeholder="(00) 00000-0000" th:field="*{phone}" required>
+      </label>
+
+      <label>
+        Disponibilidade
+        <textarea class="form-input" rows="3" placeholder="Dias e horários disponíveis" th:field="*{availability}" required></textarea>
+      </label>
+
+      <button class="cada" type="submit">Enviar candidatura</button>
+      <p class="form-message error" th:if="${error}" th:text="${error}"></p>
+      <p class="form-message success" th:if="${success}" th:text="${success}"></p>
+    </form>
+  </section>
+</body>
+</html>

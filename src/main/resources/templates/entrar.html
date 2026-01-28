@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+  <title>Entrar</title>
+</head>
+<body>
+  <img class="blue" src="/images/bluzao.jpg" alt="">
+  <h2 class="o">Bem-vindo de volta ao Prato Cheio</h2>
+
+  <div class="numsei">
+    <form th:action="@{/entrar}" method="post" th:object="${loginForm}">
+      <input class="form-input" type="text" placeholder="Nome" th:field="*{name}" required>
+      <input class="form-input" type="password" placeholder="Senha" th:field="*{password}" required>
+
+      <button class="cada" type="submit">Entrar</button>
+      <p class="form-message error" th:if="${error}" th:text="${error}"></p>
+    </form>
+  </div>
+</body>
+</html>
