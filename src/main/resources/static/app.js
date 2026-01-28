@@ -36,8 +36,11 @@ const handleRegister = () => {
         method: 'POST',
         body: JSON.stringify(payload),
       });
-      setMessage(message, data.message, false);
+      setMessage(message, 'Cadastrado com sucesso', false);
       form.reset();
+      setTimeout(() => {
+        window.location.href = '/index.html';
+      }, 2000);
     } catch (error) {
       setMessage(message, error.message, true);
     }

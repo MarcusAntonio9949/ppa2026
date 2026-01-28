@@ -383,3 +383,7 @@ form {
   padding: 12px;
   border-radius: 8px;
 }
+
+.hidden {
+  display: none;
+}
