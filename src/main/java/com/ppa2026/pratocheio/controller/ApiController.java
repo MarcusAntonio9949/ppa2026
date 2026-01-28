@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -58,8 +59,11 @@ public class ApiController {
   }
 
   @GetMapping("/usuario")
-  public ResponseEntity<?> usuario(HttpSession session) {
+  public ResponseEntity<?> usuario(HttpSession session, @RequestParam(required = false) Long userId) {
     Optional<User> user = getSessionUser(session);
+    if (user.isEmpty() && userId != null) {
+      user = userService.findById(userId);
+    }
     if (user.isEmpty()) {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
           .body(new ApiResponse("Faça login para acessar a conta."));
@@ -71,6 +75,9 @@ public class ApiController {
   @PostMapping("/doar")
   public ResponseEntity<ApiResponse> doar(@RequestBody DonationForm form, HttpSession session) {
     Optional<User> user = getSessionUser(session);
+    if (user.isEmpty() && form.getUserId() != null) {
+      user = userService.findById(form.getUserId());
+    }
     if (user.isEmpty()) {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
           .body(new ApiResponse("Entre ou cadastre-se para registrar a doação."));

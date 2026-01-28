@@ -16,6 +16,16 @@ const apiRequest = async (path, options = {}) => {
   return data;
 };
 
+const getStoredUserId = () => localStorage.getItem('userId');
+
+const setStoredUserId = (userId) => {
+  if (userId) {
+    localStorage.setItem('userId', String(userId));
+  }
+};
+
+const clearStoredUserId = () => localStorage.removeItem('userId');
+
 const setMessage = (element, message, isError = false) => {
   if (!element) return;
   element.textContent = message;
@@ -56,10 +66,11 @@ const handleLogin = () => {
     event.preventDefault();
     const payload = Object.fromEntries(new FormData(form).entries());
     try {
-      await apiRequest('/api/entrar', {
+      const data = await apiRequest('/api/entrar', {
         method: 'POST',
         body: JSON.stringify(payload),
       });
+      setStoredUserId(data.id);
       window.location.href = '/userPage.html';
     } catch (error) {
       setMessage(message, error.message, true);
@@ -111,6 +122,9 @@ const handleVolunteer = () => {
 
 const handleUserPage = async () => {
   try {
+    const storedUserId = getStoredUserId();
+    const userPath = storedUserId ? `/api/usuario?userId=${storedUserId}` : '/api/usuario';
+    const data = await apiRequest(userPath);
     const data = await apiRequest('/api/usuario');
     document.getElementById('user-name').textContent = data.name;
     document.getElementById('user-cpf').textContent = data.cpf;
@@ -144,6 +158,7 @@ const handleUserPage = async () => {
   if (logoutButton) {
     logoutButton.addEventListener('click', async () => {
       await apiRequest('/api/sair');
+      clearStoredUserId();
       window.location.href = '/';
     });
   }
@@ -160,6 +175,7 @@ const handleHome = async () => {
     logoutButton?.classList.remove('hidden');
     logoutButton?.addEventListener('click', async () => {
       await apiRequest('/api/sair');
+      clearStoredUserId();
       window.location.reload();
     });
   } catch (error) {

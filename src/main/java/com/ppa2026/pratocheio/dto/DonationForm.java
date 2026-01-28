@@ -7,4 +7,5 @@ import lombok.Data;
 public class DonationForm {
   private String description;
   private PickupOption pickupOption;
+  private Long userId;
 }
