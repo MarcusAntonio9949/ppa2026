@@ -16,6 +16,19 @@ const apiRequest = async (path, options = {}) => {
   return data;
 };
 
+const getStoredUserId = () => localStorage.getItem('userId');
+const getStoredAdmin = () => localStorage.getItem('isAdmin') === 'true';
+
+const setStoredUserId = (userId) => {
+  if (userId) {
+    localStorage.setItem('userId', String(userId));
+  }
+};
+
+const clearStoredUserId = () => localStorage.removeItem('userId');
+const setStoredAdmin = (value) => localStorage.setItem('isAdmin', String(Boolean(value)));
+const clearStoredAdmin = () => localStorage.removeItem('isAdmin');
+
 const setMessage = (element, message, isError = false) => {
   if (!element) return;
   element.textContent = message;
@@ -56,10 +69,16 @@ const handleLogin = () => {
     event.preventDefault();
     const payload = Object.fromEntries(new FormData(form).entries());
     try {
-      await apiRequest('/api/entrar', {
+      const data = await apiRequest('/api/entrar', {
         method: 'POST',
         body: JSON.stringify(payload),
       });
+      if (data.admin) {
+        setStoredAdmin(true);
+        window.location.href = '/admin.html';
+        return;
+      }
+      setStoredUserId(data.id);
       window.location.href = '/userPage.html';
     } catch (error) {
       setMessage(message, error.message, true);
@@ -75,6 +94,10 @@ const handleDonation = () => {
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
     const payload = Object.fromEntries(new FormData(form).entries());
+    const storedUserId = getStoredUserId();
+    if (storedUserId) {
+      payload.userId = Number(storedUserId);
+    }
     try {
       const data = await apiRequest('/api/doar', {
         method: 'POST',
@@ -111,7 +134,9 @@ const handleVolunteer = () => {
 
 const handleUserPage = async () => {
   try {
-    const data = await apiRequest('/api/usuario');
+    const storedUserId = getStoredUserId();
+    const userPath = storedUserId ? `/api/usuario?userId=${storedUserId}` : '/api/usuario';
+    const data = await apiRequest(userPath);
     document.getElementById('user-name').textContent = data.name;
     document.getElementById('user-cpf').textContent = data.cpf;
     document.getElementById('user-phone').textContent = data.phone;
@@ -144,6 +169,8 @@ const handleUserPage = async () => {
   if (logoutButton) {
     logoutButton.addEventListener('click', async () => {
       await apiRequest('/api/sair');
+      clearStoredUserId();
+      clearStoredAdmin();
       window.location.href = '/';
     });
   }
@@ -155,15 +182,63 @@ const handleHome = async () => {
   if (!pointsValue) return;
 
   try {
-    const data = await apiRequest('/api/usuario');
+    const storedUserId = getStoredUserId();
+    const userPath = storedUserId ? `/api/usuario?userId=${storedUserId}` : '/api/usuario';
+    const data = await apiRequest(userPath);
     pointsValue.textContent = data.points;
     logoutButton?.classList.remove('hidden');
     logoutButton?.addEventListener('click', async () => {
       await apiRequest('/api/sair');
+      clearStoredUserId();
+      clearStoredAdmin();
       window.location.reload();
     });
   } catch (error) {
     pointsValue.textContent = 'Cadastre-se para acumular!';
+  }
+};
+
+const handleAdminPage = async () => {
+  const adminFlag = getStoredAdmin();
+  try {
+    const overviewPath = adminFlag ? '/api/admin/overview?admin=true' : '/api/admin/overview';
+    const data = await apiRequest(overviewPath);
+    const usersList = document.getElementById('admin-users');
+    const donationsList = document.getElementById('admin-donations');
+    const volunteersList = document.getElementById('admin-volunteers');
+
+    usersList.innerHTML = '';
+    data.users.forEach((user) => {
+      const item = document.createElement('li');
+      item.textContent = `${user.id} - ${user.name} (CPF: ${user.cpf}) | Tel: ${user.phone} | Pontos: ${user.points}`;
+      usersList.appendChild(item);
+    });
+
+    donationsList.innerHTML = '';
+    data.donations.forEach((donation) => {
+      const item = document.createElement('li');
+      item.textContent = `${donation.description} - ${donation.pickupOption} (${donation.createdAt})`;
+      donationsList.appendChild(item);
+    });
+
+    volunteersList.innerHTML = '';
+    data.volunteers.forEach((volunteer) => {
+      const item = document.createElement('li');
+      item.textContent = `${volunteer.name} (${volunteer.email}) | Tel: ${volunteer.phone} | ${volunteer.availability}`;
+      volunteersList.appendChild(item);
+    });
+  } catch (error) {
+    window.location.href = '/entrar.html';
+  }
+
+  const adminLogout = document.getElementById('admin-logout');
+  if (adminLogout) {
+    adminLogout.addEventListener('click', async () => {
+      await apiRequest('/api/sair');
+      clearStoredAdmin();
+      clearStoredUserId();
+      window.location.href = '/index.html';
+    });
   }
 };
 
@@ -186,5 +261,8 @@ switch (page) {
   case 'home':
   default:
     handleHome();
+    break;
+  case 'admin':
+    handleAdminPage();
     break;
 }

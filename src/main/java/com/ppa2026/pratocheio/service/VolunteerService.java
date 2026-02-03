@@ -4,6 +4,7 @@ import com.ppa2026.pratocheio.dto.VolunteerForm;
 import com.ppa2026.pratocheio.model.VolunteerApplication;
 import com.ppa2026.pratocheio.repository.VolunteerApplicationRepository;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,5 +22,9 @@ public class VolunteerService {
         .createdAt(LocalDateTime.now())
         .build();
     return volunteerRepository.save(application);
+  }
+
+  public List<VolunteerApplication> findAll() {
+    return volunteerRepository.findAll();
   }
 }
