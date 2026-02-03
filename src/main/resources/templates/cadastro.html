@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+  <title>Cadastro</title>
+</head>
+<body>
+  <img class="blue" src="/images/bluzao.jpg" alt="">
+
+  <h1 class="o">Bem-vindo ao Prato Cheio</h1>
+  <div class="numsei">
+    <form th:action="@{/cadastro}" method="post" th:object="${registrationForm}">
+      <input class="form-input" type="text" placeholder="Nome" th:field="*{name}" required>
+      <input class="form-input" type="password" placeholder="Senha" th:field="*{password}" required>
+      <input class="form-input" type="text" placeholder="CPF" th:field="*{cpf}" required>
+      <input class="form-input" type="text" placeholder="Telefone" th:field="*{phone}" required>
+
+      <button class="cada" type="submit">Cadastrar</button>
+      <p class="form-message error" th:if="${error}" th:text="${error}"></p>
+    </form>
+
+    <img class="logi" src="/images/Prato_Cheio2-removebg-preview.png" alt="">
+  </div>
+</body>
+</html>

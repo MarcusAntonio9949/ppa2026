@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+  <title>Doe Agora</title>
+</head>
+<body>
+  <header class="simple-header">
+    <a href="/">Voltar</a>
+    <a href="/usuario" th:if="${user != null}">Minha conta</a>
+  </header>
+
+  <section class="form-section">
+    <h1>Doe agora</h1>
+    <p>Conte quais alimentos você deseja doar e escolha a melhor forma de entrega.</p>
+
+    <form class="donation-form" th:action="@{/doar}" method="post" th:object="${donationForm}">
+      <label>
+        Descrição dos alimentos
+        <textarea class="form-input" rows="4" placeholder="Ex: 5kg de arroz, 2 caixas de leite" th:field="*{description}" required></textarea>
+      </label>
+
+      <label>
+        Como prefere entregar?
+        <select class="form-input" th:field="*{pickupOption}" required>
+          <option value="" disabled selected>Selecione</option>
+          <option th:each="option : ${pickupOptions}" th:value="${option}" th:text="${option.label}"></option>
+        </select>
+      </label>
+
+      <button class="cada" type="submit">Registrar doação</button>
+      <p class="form-message error" th:if="${error}" th:text="${error}"></p>
+    </form>
+  </section>
+</body>
+</html>
