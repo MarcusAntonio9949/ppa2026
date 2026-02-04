@@ -28,6 +28,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ApiController {
   public static final String SESSION_USER_ID = "userId";
+  private static final String SESSION_ADMIN = "admin";
+  private static final String ADMIN_USERNAME = "ADMIN";
+  private static final String ADMIN_PASSWORD = "PASSWORD";
 
   private final UserService userService;
   private final DonationService donationService;
@@ -48,6 +51,10 @@ public class ApiController {
   public ResponseEntity<?> entrar(@RequestBody LoginForm form, HttpSession session) {
     if (isBlank(form.getName()) || isBlank(form.getPassword())) {
       return ResponseEntity.badRequest().body(new ApiResponse("Informe nome e senha para entrar."));
+    }
+    if (ADMIN_USERNAME.equals(form.getName()) && ADMIN_PASSWORD.equals(form.getPassword())) {
+      session.setAttribute(SESSION_ADMIN, true);
+      return ResponseEntity.ok(new AdminLogin(true));
     }
     Optional<User> user = userService.authenticate(form.getName(), form.getPassword());
     if (user.isEmpty()) {
@@ -107,6 +114,18 @@ public class ApiController {
     return ResponseEntity.ok(new ApiResponse("Sessão encerrada."));
   }
 
+  @GetMapping("/admin/overview")
+  public ResponseEntity<?> adminOverview(HttpSession session, @RequestParam(required = false) Boolean admin) {
+    if (!isAdmin(session, admin)) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+          .body(new ApiResponse("Acesso restrito ao administrador."));
+    }
+    return ResponseEntity.ok(AdminOverview.from(
+        userService.findAll(),
+        donationService.findAll(),
+        volunteerService.findAll()));
+  }
+
   private Optional<User> getSessionUser(HttpSession session) {
     Object id = session.getAttribute(SESSION_USER_ID);
     if (id instanceof Long userId) {
@@ -119,7 +138,52 @@ public class ApiController {
     return value == null || value.isBlank();
   }
 
+  private boolean isAdmin(HttpSession session, Boolean admin) {
+    Object flag = session.getAttribute(SESSION_ADMIN);
+    if (flag instanceof Boolean isAdmin && isAdmin) {
+      return true;
+    }
+    return Boolean.TRUE.equals(admin);
+  }
+
   public record ApiResponse(String message) {}
+
+  public record AdminLogin(boolean admin) {}
+
+  public record AdminOverview(
+      List<UserSummary> users,
+      List<DonationSummary> donations,
+      List<VolunteerSummary> volunteers
+  ) {
+    static AdminOverview from(List<User> users, List<Donation> donations,
+                              List<com.ppa2026.pratocheio.model.VolunteerApplication> volunteers) {
+      return new AdminOverview(
+          users.stream().map(UserSummary::from).collect(Collectors.toList()),
+          donations.stream().map(DonationSummary::from).collect(Collectors.toList()),
+          volunteers.stream().map(VolunteerSummary::from).collect(Collectors.toList())
+      );
+    }
+  }
+
+  public record UserSummary(Long id, String name, String cpf, String phone, int points) {
+    static UserSummary from(User user) {
+      return new UserSummary(user.getId(), user.getName(), user.getCpf(), user.getPhone(), user.getPoints());
+    }
+  }
+
+  public record VolunteerSummary(Long id, String name, String email, String phone,
+                                 String availability, String createdAt) {
+    static VolunteerSummary from(com.ppa2026.pratocheio.model.VolunteerApplication volunteer) {
+      return new VolunteerSummary(
+          volunteer.getId(),
+          volunteer.getName(),
+          volunteer.getEmail(),
+          volunteer.getPhone(),
+          volunteer.getAvailability(),
+          volunteer.getCreatedAt().toString()
+      );
+    }
+  }
 
   public record DonationSummary(String description, String pickupOption, String createdAt) {
     static DonationSummary from(Donation donation) {

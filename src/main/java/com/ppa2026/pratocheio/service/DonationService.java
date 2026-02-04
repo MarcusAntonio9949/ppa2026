@@ -33,4 +33,8 @@ public class DonationService {
   public List<Donation> findByUser(User user) {
     return donationRepository.findAllByUserOrderByCreatedAtDesc(user);
   }
+
+  public List<Donation> findAll() {
+    return donationRepository.findAll();
+  }
 }

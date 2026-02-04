@@ -86,6 +86,10 @@ const handleDonation = () => {
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
     const payload = Object.fromEntries(new FormData(form).entries());
+    const storedUserId = getStoredUserId();
+    if (storedUserId) {
+      payload.userId = Number(storedUserId);
+    }
     try {
       const data = await apiRequest('/api/doar', {
         method: 'POST',
@@ -170,7 +174,9 @@ const handleHome = async () => {
   if (!pointsValue) return;
 
   try {
-    const data = await apiRequest('/api/usuario');
+    const storedUserId = getStoredUserId();
+    const userPath = storedUserId ? `/api/usuario?userId=${storedUserId}` : '/api/usuario';
+    const data = await apiRequest(userPath);
     pointsValue.textContent = data.points;
     logoutButton?.classList.remove('hidden');
     logoutButton?.addEventListener('click', async () => {
@@ -180,6 +186,50 @@ const handleHome = async () => {
     });
   } catch (error) {
     pointsValue.textContent = 'Cadastre-se para acumular!';
+  }
+};
+
+const handleAdminPage = async () => {
+  const adminFlag = getStoredAdmin();
+  try {
+    const overviewPath = adminFlag ? '/api/admin/overview?admin=true' : '/api/admin/overview';
+    const data = await apiRequest(overviewPath);
+    const usersList = document.getElementById('admin-users');
+    const donationsList = document.getElementById('admin-donations');
+    const volunteersList = document.getElementById('admin-volunteers');
+
+    usersList.innerHTML = '';
+    data.users.forEach((user) => {
+      const item = document.createElement('li');
+      item.textContent = `${user.id} - ${user.name} (CPF: ${user.cpf}) | Tel: ${user.phone} | Pontos: ${user.points}`;
+      usersList.appendChild(item);
+    });
+
+    donationsList.innerHTML = '';
+    data.donations.forEach((donation) => {
+      const item = document.createElement('li');
+      item.textContent = `${donation.description} - ${donation.pickupOption} (${donation.createdAt})`;
+      donationsList.appendChild(item);
+    });
+
+    volunteersList.innerHTML = '';
+    data.volunteers.forEach((volunteer) => {
+      const item = document.createElement('li');
+      item.textContent = `${volunteer.name} (${volunteer.email}) | Tel: ${volunteer.phone} | ${volunteer.availability}`;
+      volunteersList.appendChild(item);
+    });
+  } catch (error) {
+    window.location.href = '/entrar.html';
+  }
+
+  const adminLogout = document.getElementById('admin-logout');
+  if (adminLogout) {
+    adminLogout.addEventListener('click', async () => {
+      await apiRequest('/api/sair');
+      clearStoredAdmin();
+      clearStoredUserId();
+      window.location.href = '/index.html';
+    });
   }
 };
 
@@ -202,5 +252,8 @@ switch (page) {
   case 'home':
   default:
     handleHome();
+    break;
+  case 'admin':
+    handleAdminPage();
     break;
 }
